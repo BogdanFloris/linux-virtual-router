@@ -19,14 +19,7 @@ int main() {
                result);
         return EXIT_FAILURE;
     }
-
-    printf("Successfully parsed:\n");
-    printf("IPv4 forwarding: %s\n", config.ipv4_forwrd ? "enabled" : "disabled");
-    printf("NAT outgoing interface: %s\n", config.nat_outgoing_interface);
-    printf("Number of namespaces: %d\n", config.namespace_count);
-    printf("Number of bridges: %d\n", config.bridge_count);
-    printf("Number of firewall rules: %d\n", config.fw_rule_count);
-    printf("Number of NAT rules: %d\n", config.nat_rule_count);
+    print_config(&config, stdout);
 
     free_config(&config);
 
