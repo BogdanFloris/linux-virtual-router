@@ -1,6 +1,7 @@
 #include "config.h"
 
 #include <arpa/inet.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
@@ -39,5 +40,53 @@ int parse_cidr(const char *cidr_str, struct in_addr *addr, u_int8_t *mask) {
     *mask = (u_int8_t)mask_val;
 
     return 0;
+}
+
+int parse_config_file(const char *filename, config_t *config) {
+    return -1;
+}
+
+void init_config(config_t *config) {
+    if (config == NULL) {
+        return;
+    }
+    config->ipv4_forwrd = false;
+    memset(config->nat_outgoing_interface, 0, sizeof config->nat_outgoing_interface);
+
+    config->namespace_count = 0;
+    config->namespaces = NULL;
+
+    config->bridge_count = 0;
+    config->bridges = NULL;
+
+    config->fw_rule_count = 0;
+    config->fw_rules = NULL;
+
+    config->nat_rule_count = 0;
+    config->nat_rules = NULL;
+}
+
+void free_config(config_t *config) {
+    if (config == NULL) {
+        return;
+    }
+
+    free(config->namespaces);
+    free(config->bridges);
+    free(config->fw_rules);
+    free(config->nat_rules);
+
+    // Reset pointers and counts to prevent use after free
+    config->namespace_count = 0;
+    config->namespaces = NULL;
+
+    config->bridge_count = 0;
+    config->bridges = NULL;
+
+    config->fw_rule_count = 0;
+    config->fw_rules = NULL;
+
+    config->nat_rule_count = 0;
+    config->nat_rules = NULL;
 }
 
