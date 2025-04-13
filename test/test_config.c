@@ -72,9 +72,121 @@ void test_parse_cidr() {
     printf("parse_cidr() tests passed!\n");
 }
 
+void test_parse_fw_rule() {
+    printf("Testing parse_fw_rule()...\n");
+
+    // Test case 1: Valid rule with namespace source and internet destination
+    {
+        const char *rule_str = "private1 -> INTERNET";
+        fw_rule_t rule;
+
+        int result = parse_fw_rule(rule_str, &rule);
+        TEST_ASSERT(result == 0,
+                    "parse_fw_rule should return 0 for valid input");
+
+        TEST_ASSERT(rule.src_type == ENDPOINT_NS,
+                    "Source type should be ENDPOINT_NS");
+        TEST_ASSERT(strcmp(rule.src_name, "private1") == 0,
+                    "Source name should be 'private1'");
+
+        TEST_ASSERT(rule.dst_type == ENDPOINT_INTERNET,
+                    "Destination type should be ENDPOINT_INTERNET");
+        TEST_ASSERT(strcmp(rule.dst_name, "INTERNET") == 0,
+                    "Destination name should be 'INTERNET'");
+
+        TEST_ASSERT(rule.action == FW_ALLOW,
+                    "Default action should be FW_ALLOW");
+    }
+
+    // Test case 2: Valid rule with internet source and namespace destination
+    {
+        const char *rule_str = "INTERNET -> private2";
+        fw_rule_t rule;
+
+        int result = parse_fw_rule(rule_str, &rule);
+        TEST_ASSERT(result == 0,
+                    "parse_fw_rule should return 0 for valid input");
+
+        TEST_ASSERT(rule.src_type == ENDPOINT_INTERNET,
+                    "Source type should be ENDPOINT_INTERNET");
+        TEST_ASSERT(strcmp(rule.src_name, "INTERNET") == 0,
+                    "Source name should be 'INTERNET'");
+
+        TEST_ASSERT(rule.dst_type == ENDPOINT_NS,
+                    "Destination type should be ENDPOINT_NS");
+        TEST_ASSERT(strcmp(rule.dst_name, "private2") == 0,
+                    "Destination name should be 'private2'");
+
+        TEST_ASSERT(rule.action == FW_ALLOW,
+                    "Default action should be FW_ALLOW");
+    }
+
+    // Test case 3: Valid rule between two namespaces
+    {
+        const char *rule_str = "private1 -> private2";
+        fw_rule_t rule;
+
+        int result = parse_fw_rule(rule_str, &rule);
+        TEST_ASSERT(result == 0,
+                    "parse_fw_rule should return 0 for valid input");
+
+        TEST_ASSERT(rule.src_type == ENDPOINT_NS,
+                    "Source type should be ENDPOINT_NS");
+        TEST_ASSERT(strcmp(rule.src_name, "private1") == 0,
+                    "Source name should be 'private1'");
+
+        TEST_ASSERT(rule.dst_type == ENDPOINT_NS,
+                    "Destination type should be ENDPOINT_NS");
+        TEST_ASSERT(strcmp(rule.dst_name, "private2") == 0,
+                    "Destination name should be 'private2'");
+    }
+
+    // Test case 4: Invalid format (no arrow)
+    {
+        const char *rule_str = "private1 INTERNET";
+        fw_rule_t rule;
+
+        int result = parse_fw_rule(rule_str, &rule);
+        TEST_ASSERT(result != 0,
+                    "parse_fw_rule should return error for missing arrow");
+    }
+
+    // Test case 5: Invalid format (missing destination)
+    {
+        const char *rule_str = "private1 ->";
+        fw_rule_t rule;
+
+        int result = parse_fw_rule(rule_str, &rule);
+        TEST_ASSERT(
+            result != 0,
+            "parse_fw_rule should return error for missing destination");
+    }
+
+    // Test case 6: Invalid format (missing source)
+    {
+        const char *rule_str = "-> INTERNET";
+        fw_rule_t rule;
+
+        int result = parse_fw_rule(rule_str, &rule);
+        TEST_ASSERT(result != 0,
+                    "parse_fw_rule should return error for missing source");
+    }
+
+    // Test case 7: Empty string
+    {
+        const char *rule_str = "";
+        fw_rule_t rule;
+
+        int result = parse_fw_rule(rule_str, &rule);
+        TEST_ASSERT(result != 0,
+                    "parse_fw_rule should return error for empty string");
+    }
+
+    printf("parse_fw_rule() tests passed!\n");
+}
+
 int main() {
     test_parse_cidr();
-
-    printf("All tests passed successfully!\n");
+    test_parse_fw_rule();
     return 0;
 }

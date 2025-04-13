@@ -42,10 +42,46 @@ int parse_cidr(const char *cidr_str, struct in_addr *addr, u_int8_t *mask) {
     return 0;
 }
 
-int parse_config_file(const char *filename, config_t *config) { return 0; }
+int parse_config_file(const char *filename, config_t *config) { return -1; }
 
 int parse_config_line(char *line, config_t *config) {
     return -1; /* Not implemented yet */
+}
+
+int parse_fw_rule(const char *rule_str, fw_rule_t *rule) {
+    if (rule_str == NULL || rule == NULL) {
+        return -1;
+    }
+
+    rule->action = FW_ALLOW;
+
+    char rule_str_cpy[64];
+    if (strlen(rule_str) >= sizeof rule_str_cpy) {
+        return -1; /* Input too long */
+    }
+    strncpy(rule_str_cpy, rule_str, sizeof(rule_str_cpy) - 1);
+
+    /* Parse string */
+    char *src_name = strtok(rule_str_cpy, " ");
+    if (!src_name) {
+        return -1; /* Invalid rule_str */
+    }
+    /* Drop -> */
+    strtok(NULL, " ");
+    char *dst_name = strtok(NULL, " ");
+    if (!dst_name) {
+        return -1; /* Invalid rule_str */
+    }
+
+    /* Assign to rule struct */
+    rule->src_type =
+        strcmp(src_name, "INTERNET") == 0 ? ENDPOINT_INTERNET : ENDPOINT_NS;
+    strncpy(rule->src_name, src_name, sizeof(rule->src_name) - 1);
+    rule->dst_type =
+        strcmp(dst_name, "INTERNET") == 0 ? ENDPOINT_INTERNET : ENDPOINT_NS;
+    strncpy(rule->dst_name, dst_name, sizeof(rule->dst_name) - 1);
+
+    return 0;
 }
 
 void init_config(config_t *config) {
@@ -62,6 +98,7 @@ void init_config(config_t *config) {
     config->bridge_count = 0;
     config->bridges = NULL;
 
+    config->fw_default_action = FW_DROP; /* Default to DROP for security */
     config->fw_rule_count = 0;
     config->fw_rules = NULL;
 
@@ -104,6 +141,8 @@ void print_config(const config_t *config, FILE *fp) {
     fprintf(fp, "IPv4 Forwarding: %s\n",
             config->ipv4_forwrd ? "Enabled" : "Disabled");
     fprintf(fp, "NAT Outgoing Interface: %s\n", config->nat_outgoing_interface);
+    fprintf(fp, "Default Firewall Action: %s\n",
+            config->fw_default_action == FW_ALLOW ? "ALLOW" : "DROP");
 
     // Print namespaces
     fprintf(fp, "\n--- Namespaces (%d) ---\n", config->namespace_count);
@@ -157,7 +196,8 @@ void print_config(const config_t *config, FILE *fp) {
             fprintf(fp, "INTERNET");
         }
 
-        fprintf(fp, "\n");
+        // Action (if specified)
+        fprintf(fp, " (%s)\n", rule->action == FW_ALLOW ? "ALLOW" : "DROP");
     }
 
     // Print NAT rules

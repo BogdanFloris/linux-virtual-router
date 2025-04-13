@@ -15,6 +15,7 @@ typedef struct {
     int namespace_count;            /* Number of namespaces */
     bridge_t *bridges;              /* Array of bridge configurations */
     int bridge_count;               /* Number of bridges */
+    fw_action_t fw_default_action;  /* Default firewall action (ALLOW/DROP) */
     fw_rule_t *fw_rules;            /* Array of firewall rules */
     int fw_rule_count;              /* Number of firewall rules */
     nat_rule_t *nat_rules;          /* Array of NAT rules */

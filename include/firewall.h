@@ -18,6 +18,8 @@ typedef struct {
     char src_name[32];   /* Source name (namespace name or "INTERNET") */
     endpoint_t dst_type; /* Destination endpoint type */
     char dst_name[32];   /* Destination name (namespace name or "INTERNET") */
+    fw_action_t
+        action; /* Action to take on matching traffic (default: FW_ALLOW) */
 } fw_rule_t;
 
 /* NAT rule structure */
