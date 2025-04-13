@@ -1,0 +1,12 @@
+[
+  {
+    "directory": "/home/bogdan/code/linux-virtual-router",
+    "command": "clang -Wall -Wextra -std=c11 -Iinclude -c src/config.c -o obj/.c/.o/config.c",
+    "file": "src/config.c"
+  }
+  {
+    "directory": "/home/bogdan/code/linux-virtual-router",
+    "command": "clang -Wall -Wextra -std=c11 -Iinclude -c src/main.c -o obj/.c/.o/main.c",
+    "file": "src/main.c"
+  }
+]
