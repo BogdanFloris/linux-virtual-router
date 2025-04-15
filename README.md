@@ -7,6 +7,7 @@ A configurable virtual router implementation for Linux systems using network nam
 This project creates isolated network environments using Linux network namespaces and connects them through a configurable virtual router. It can be used for network testing, development environments, or to study networking concepts.
 
 Features:
+
 - Create multiple isolated network namespaces
 - Connect namespaces via bridges or veth pairs
 - Configure IP addressing and routing
