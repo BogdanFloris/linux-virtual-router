@@ -52,7 +52,11 @@ compiledb:
 		echo "    \"directory\": \"$$(pwd)\"," >> compile_commands.json; \
 		echo "    \"command\": \"$(CC) $(CFLAGS) -I$(INC_DIR) -c $$src -o obj/$$(basename $$src .c).o\"," >> compile_commands.json; \
 		echo "    \"file\": \"$$src\"" >> compile_commands.json; \
-		echo "  }$(if $(filter-out $$src,$(lastword $(SRCS) $(TEST_SRCS))),," >> compile_commands.json; \
+		if [ "$$src" != "$$(echo $(SRCS) $(TEST_SRCS) | tr ' ' '\n' | tail -1)" ]; then \
+			echo "  }," >> compile_commands.json; \
+		else \
+			echo "  }" >> compile_commands.json; \
+		fi; \
 	done
 	@echo "]" >> compile_commands.json
 
