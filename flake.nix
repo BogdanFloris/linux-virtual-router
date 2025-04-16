@@ -12,7 +12,8 @@
       let pkgs = nixpkgs.legacyPackages.${system};
       in {
         devShells.default = pkgs.mkShell {
-          packages = [ pkgs.clang-tools pkgs.clang pkgs.inetutils ];
+          packages =
+            [ pkgs.clang-tools pkgs.clang pkgs.inetutils pkgs.valgrind ];
         };
       });
 }
