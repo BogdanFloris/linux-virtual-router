@@ -1,3 +1,8 @@
+/*
+ * config.h
+ *
+ * Configuration parsing for the  network topology
+ */
 #include "firewall.h"
 #include "net_dev.h"
 #include "net_ns.h"
