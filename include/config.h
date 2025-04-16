@@ -6,6 +6,7 @@
 #include "firewall.h"
 #include "net_dev.h"
 #include "net_ns.h"
+#include "constants.h"
 
 #include <netdb.h>
 #include <stdbool.h>
@@ -15,7 +16,7 @@
 typedef struct {
     bool ipv4_forwrd; /* Enable IPv4 forwarding */
     char
-        nat_outgoing_interface[32]; /* Interface with internet access for NAT */
+        nat_outgoing_interface[MAX_IF_NAME_LEN]; /* Interface with internet access for NAT */
     namespace_t *namespaces;        /* Array of namespace configurations */
     int namespace_count;            /* Number of namespaces */
     bridge_t *bridges;              /* Array of bridge configurations */

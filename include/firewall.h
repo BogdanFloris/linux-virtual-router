@@ -1,4 +1,7 @@
+#include "constants.h"
+
 #include <netdb.h>
+
 
 /* Firewall action types */
 typedef enum {
@@ -15,9 +18,11 @@ typedef enum {
 /* Firewall rule structure */
 typedef struct {
     endpoint_t src_type; /* Source endpoint type */
-    char src_name[32];   /* Source name (namespace name or "INTERNET") */
-    endpoint_t dst_type; /* Destination endpoint type */
-    char dst_name[32];   /* Destination name (namespace name or "INTERNET") */
+    char
+        src_name[MAX_NAME_LEN]; /* Source name (namespace name or "INTERNET") */
+    endpoint_t dst_type;        /* Destination endpoint type */
+    char dst_name[MAX_NAME_LEN]; /* Destination name (namespace name or
+                                    "INTERNET") */
     fw_action_t
         action; /* Action to take on matching traffic (default: FW_ALLOW) */
 } fw_rule_t;
