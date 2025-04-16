@@ -174,11 +174,16 @@ int parse_config_line(char *line, config_t *config) {
     }
 
     // get key and value trimmed
-    char *key = trim(strtok(trimmed, "="));
-    char *value = trim(strtok(NULL, "="));
-    if (key == NULL || value == NULL) {
+    char *key = strtok(trimmed, "=");
+    if (key == NULL) {
         return -1; /* Invalid line */
     }
+    key = trim(key);
+    char *value = strtok(NULL, "=");
+    if (value == NULL) {
+        return -1; /* Invalid line */
+    }
+    value = trim(value);
 
     // remove end of line comments
     char *comment = strchr(value, '#');
