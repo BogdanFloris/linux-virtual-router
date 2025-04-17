@@ -51,8 +51,8 @@ int create_bridges(bridge_t *bridges, int count);
  * @param bridge_count Number of bridges available
  * @return 0 on success, -1 on failure
  */
-int connect_namespaces(namespace_t *namespaces, int count,
-                       bridge_t *bridges, int bridge_count);
+int connect_namespaces(namespace_t *namespaces, int count, bridge_t *bridges,
+                       int bridge_count);
 
 /**
  * Setup network interfaces inside namespaces
