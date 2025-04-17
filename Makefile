@@ -2,6 +2,13 @@ CC = clang
 CFLAGS = -Wall -Wextra -std=c11
 LDFLAGS =
 
+# Add nftables support
+NFTABLES_CFLAGS = $(shell pkg-config --cflags libnftables 2>/dev/null || echo "")
+NFTABLES_LIBS = $(shell pkg-config --libs libnftables 2>/dev/null || echo "-lnftables")
+
+CFLAGS += $(NFTABLES_CFLAGS)
+LDFLAGS += $(NFTABLES_LIBS)
+
 SRC_DIR = src
 OBJ_DIR = obj
 BIN_DIR = bin

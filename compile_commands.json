@@ -1,17 +1,22 @@
 [
   {
     "directory": "/home/bogdan/code/linux-virtual-router",
-    "command": "clang -Wall -Wextra -std=c11 -Iinclude -c src/config.c -o obj/config.o",
+    "command": "clang -Wall -Wextra -std=c11 -I/nix/store/58mq02d5jbj0sz0b0bfq7ln1v3ijqasg-nftables-1.1.1/include -Iinclude -c src/config.c -o obj/config.o",
     "file": "src/config.c"
   },
   {
     "directory": "/home/bogdan/code/linux-virtual-router",
-    "command": "clang -Wall -Wextra -std=c11 -Iinclude -c src/main.c -o obj/main.o",
+    "command": "clang -Wall -Wextra -std=c11 -I/nix/store/58mq02d5jbj0sz0b0bfq7ln1v3ijqasg-nftables-1.1.1/include -Iinclude -c src/main.c -o obj/main.o",
     "file": "src/main.c"
   },
   {
     "directory": "/home/bogdan/code/linux-virtual-router",
-    "command": "clang -Wall -Wextra -std=c11 -Iinclude -c test/test_config.c -o obj/test_config.o",
+    "command": "clang -Wall -Wextra -std=c11 -I/nix/store/58mq02d5jbj0sz0b0bfq7ln1v3ijqasg-nftables-1.1.1/include -Iinclude -c src/network.c -o obj/network.o",
+    "file": "src/network.c"
+  },
+  {
+    "directory": "/home/bogdan/code/linux-virtual-router",
+    "command": "clang -Wall -Wextra -std=c11 -I/nix/store/58mq02d5jbj0sz0b0bfq7ln1v3ijqasg-nftables-1.1.1/include -Iinclude -c test/test_config.c -o obj/test_config.o",
     "file": "test/test_config.c"
   }
 ]

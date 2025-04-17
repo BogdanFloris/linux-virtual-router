@@ -18,6 +18,7 @@
             pkgs.inetutils
             pkgs.valgrind
             pkgs.nftables
+            pkgs.pkg-config
           ];
         };
       });
