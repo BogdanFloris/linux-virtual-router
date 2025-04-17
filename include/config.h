@@ -3,10 +3,10 @@
  *
  * Configuration parsing for the  network topology
  */
+#include "constants.h"
 #include "firewall.h"
 #include "net_dev.h"
 #include "net_ns.h"
-#include "constants.h"
 
 #include <netdb.h>
 #include <stdbool.h>
@@ -14,18 +14,18 @@
 
 /* Overall configuration structure */
 typedef struct {
-    bool ipv4_forwrd; /* Enable IPv4 forwarding */
-    char
-        nat_outgoing_interface[MAX_IF_NAME_LEN]; /* Interface with internet access for NAT */
-    namespace_t *namespaces;        /* Array of namespace configurations */
-    int namespace_count;            /* Number of namespaces */
-    bridge_t *bridges;              /* Array of bridge configurations */
-    int bridge_count;               /* Number of bridges */
-    fw_action_t fw_default_action;  /* Default firewall action (ALLOW/DROP) */
-    fw_rule_t *fw_rules;            /* Array of firewall rules */
-    int fw_rule_count;              /* Number of firewall rules */
-    nat_rule_t *nat_rules;          /* Array of NAT rules */
-    int nat_rule_count;             /* Number of NAT rules */
+    bool ipv4_forwrd;                             /* Enable IPv4 forwarding */
+    char nat_outgoing_interface[MAX_IF_NAME_LEN]; /* Interface with internet
+                                                     access for NAT */
+    namespace_t *namespaces;       /* Array of namespace configurations */
+    int namespace_count;           /* Number of namespaces */
+    bridge_t *bridges;             /* Array of bridge configurations */
+    int bridge_count;              /* Number of bridges */
+    fw_action_t fw_default_action; /* Default firewall action (ALLOW/DROP) */
+    fw_rule_t *fw_rules;           /* Array of firewall rules */
+    int fw_rule_count;             /* Number of firewall rules */
+    nat_rule_t *nat_rules;         /* Array of NAT rules */
+    int nat_rule_count;            /* Number of NAT rules */
 } config_t;
 
 /**
