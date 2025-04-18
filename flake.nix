@@ -20,6 +20,7 @@
             pkgs.nftables
             pkgs.pkg-config
             pkgs.lsof
+            pkgs.psmisc
           ];
         };
       });
