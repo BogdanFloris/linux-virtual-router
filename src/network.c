@@ -81,16 +81,24 @@ int create_namespaces(namespace_t *namespaces, int count) {
         }
     }
 
+    int overall_status = 0;
     for (int i = 0; i < count; i++) {
-        if (waitpid(ns_pids[i], NULL, 0) == -1) {
-            fprintf(stderr, "waitpid: %s\n", strerror(errno));
-            return -1; // waitpid failed
+        int status;
+        if (waitpid(ns_pids[i], &status, 0) == -1) {
+            fprintf(stderr, "waitpid failed for pid %d: %s\n", ns_pids[i],
+                    strerror(errno));
+            overall_status = -1;
+        } else {
+            // check if the child process exited with an error
+            if (!(WIFEXITED(status) && WEXITSTATUS(status) == 0)) {
+                fprintf(stderr, "Namespace creation failed for pid %d\n",
+                        ns_pids[i]);
+                overall_status = -1;
+            }
         }
 
-        if (stacks[i] != NULL) {
-            free(stacks[i]);
-        }
+        free(stacks[i]);
     }
 
-    return 0;
+    return overall_status;
 }
