@@ -40,6 +40,7 @@ int create_namespace(void *arg) {
                 strerror(errno));
         return -1;
     }
+    printf("Created network namespace %d\n", getpid());
     close(fd);
 
     // bind netns
@@ -53,22 +54,23 @@ int create_namespace(void *arg) {
 
 int create_namespaces(namespace_t *namespaces, int count) {
     pid_t ns_pids[count];
+    char *stacks[count];
 
     for (int i = 0; i < count; i++) {
         const namespace_t ns = namespaces[i];
-        char *stack;
         char *stack_top;
         int flags = CLONE_NEWNET;
 
-        stack = malloc(STACK_SIZE);
-        if (stack == NULL) {
+        stacks[i] = malloc(STACK_SIZE);
+        if (stacks[i] == NULL) {
             return -1; // malloc failed
         }
-        stack_top = stack + STACK_SIZE;
+        stack_top = stacks[i] + STACK_SIZE;
 
         if ((ns_pids[i] = clone(create_namespace, stack_top, flags | SIGCHLD,
                                 (void *)&ns)) == -1) {
             fprintf(stderr, "clone failed: %s", strerror(errno));
+            free(stacks[i]);
             return -1; // clone failed
         }
     }
@@ -77,6 +79,10 @@ int create_namespaces(namespace_t *namespaces, int count) {
         if (waitpid(ns_pids[i], NULL, 0) == -1) {
             fprintf(stderr, "waitpid: %s\n", strerror(errno));
             return -1; // waitpid failed
+        }
+
+        if (stacks[i] != NULL) {
+            free(stacks[i]);
         }
     }
 
