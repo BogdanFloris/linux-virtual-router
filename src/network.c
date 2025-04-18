@@ -34,19 +34,25 @@ int create_namespace(void *arg) {
     snprintf(ns_path, 100, "%s/%s", NETNS_RUN_DIR, ns.name);
 
     // create filesystem state
-    int fd = open(ns_path, O_RDONLY | O_CREAT | O_CLOEXEC, 0);
+    int fd = open(ns_path, O_RDONLY | O_CREAT | O_EXCL | O_CLOEXEC, 0);
     if (fd < 0) {
-        fprintf(stderr, "Cannot open network namespace %s: %s", ns.name,
-                strerror(errno));
-        return -1;
+        if (errno == EEXIST) {
+            fprintf(stderr, "Network namespace %s already exists\n", ns.name);
+            return 0;
+        } else {
+            fprintf(stderr, "Cannot create network namespace %s: %s", ns.name,
+                    strerror(errno));
+            return -1;
+        }
     }
-    printf("Created network namespace %d\n", getpid());
     close(fd);
 
     // bind netns
     if (mount(PROC_PATH, ns_path, "none", MS_BIND, NULL) < 0) {
         fprintf(stderr, "Bind %s -> %s failed: %s\n", PROC_PATH, ns_path,
                 strerror(errno));
+        unlink(ns_path);
+        return -1;
     }
 
     return 0;
