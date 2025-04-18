@@ -3,6 +3,9 @@
  *
  * Configuration parsing for the  network topology
  */
+#ifndef _CONFIG_H
+#define _CONFIG_H
+
 #include "constants.h"
 #include "firewall.h"
 #include "net_dev.h"
@@ -86,3 +89,5 @@ int parse_fw_rule(const char *rule_str, fw_rule_t *rule);
  * @param fp File pointer to print to (stdout, stderr, etc.)
  */
 void print_config(const config_t *config, FILE *fp);
+
+#endif /* _CONFIG_H */

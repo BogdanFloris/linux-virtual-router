@@ -1,3 +1,6 @@
+#ifndef _NET_NS_H
+#define _NET_NS_H
+
 #include "constants.h"
 
 #include <netdb.h>
@@ -18,3 +21,5 @@ typedef struct {
                                 or veth) */
     char connect_name[MAX_NAME_LEN]; /* Name of bridge or veth pair to use */
 } namespace_t;
+
+#endif // !_NET_NS_H

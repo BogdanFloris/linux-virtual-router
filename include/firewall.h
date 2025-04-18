@@ -1,7 +1,9 @@
+#ifndef _FIREWALL_H
+#define _FIREWALL_H
+
 #include "constants.h"
 
 #include <netdb.h>
-
 
 /* Firewall action types */
 typedef enum {
@@ -32,3 +34,5 @@ typedef struct {
     struct in_addr network; /* Network address to NAT */
     u_int8_t mask;          /* CIDR notation subnet mask */
 } nat_rule_t;
+
+#endif // !_FIREWALL_H
