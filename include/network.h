@@ -14,7 +14,7 @@
  * @param config Pointer to a parsed config_t structure
  * @return 0 on success, -1 on failure
  */
-int network_init(config_t *config);
+int network_up(config_t *config);
 
 /**
  * Setup IPv4 forwarding based on configuration
@@ -32,6 +32,15 @@ int setup_ipv4_forwarding(bool enable);
  * @return 0 on success, -1 on failure
  */
 int create_namespaces(namespace_t *namespaces, int count);
+
+/**
+ * Remove all namespaces created
+ *
+ * @param namespaces Array of namespace_t structures
+ * @param count Number of namespaces to remove
+ * @return 0 on success, -1 on failure
+ */
+int remove_namespaces(namespace_t *namespaces, int count);
 
 /**
  * Create all bridges defined in configuration
@@ -85,6 +94,6 @@ int setup_nat(config_t *config);
  * @param config Pointer to the config_t structure used to set up the network
  * @return 0 on success, -1 on failure
  */
-int network_cleanup(config_t *config);
+int network_down(config_t *config);
 
 #endif /* _NETWORK_H */

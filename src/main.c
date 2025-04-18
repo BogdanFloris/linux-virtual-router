@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
 
     int status = 0;
     if (strcmp(argv[2], "--up") == 0) {
-        status = network_init(&config);
+        status = network_up(&config);
         if (status != 0) {
             fprintf(stderr,
                     "ERROR: Failed to initialize network with code %d\n",
@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
             goto out_delete;
         }
     } else if (strcmp(argv[2], "--down") == 0) {
-        status = network_cleanup(&config);
+        status = network_down(&config);
         if (status != 0) {
             fprintf(stderr, "ERROR: Failed to clean up network with code %d\n",
                     status);

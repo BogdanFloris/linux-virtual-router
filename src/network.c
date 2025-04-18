@@ -15,7 +15,7 @@
 #define NETNS_RUN_DIR "/var/run/netns"
 #define PROC_PATH "/proc/self/ns/net"
 
-int network_init(config_t *config) {
+int network_up(config_t *config) {
     int status = 0;
     if ((status = create_namespaces(config->namespaces,
                                     config->namespace_count)) != 0) {
@@ -25,7 +25,14 @@ int network_init(config_t *config) {
     return 0;
 }
 
-int network_cleanup(config_t *config) { return 0; }
+int network_down(config_t *config) {
+    int status = 0;
+    if ((status = remove_namespaces(config->namespaces,
+                                    config->namespace_count)) != 0) {
+        return status;
+    }
+    return 0;
+}
 
 int create_namespace(void *arg) {
     const namespace_t ns = *(namespace_t *)arg;
@@ -40,7 +47,7 @@ int create_namespace(void *arg) {
             fprintf(stderr, "Network namespace %s already exists\n", ns.name);
             return 0;
         } else {
-            fprintf(stderr, "Cannot create network namespace %s: %s", ns.name,
+            fprintf(stderr, "Cannot create network namespace %s: %s\n", ns.name,
                     strerror(errno));
             return -1;
         }
@@ -75,7 +82,7 @@ int create_namespaces(namespace_t *namespaces, int count) {
 
         if ((ns_pids[i] = clone(create_namespace, stack_top, flags | SIGCHLD,
                                 (void *)&ns)) == -1) {
-            fprintf(stderr, "clone failed: %s", strerror(errno));
+            fprintf(stderr, "clone failed: %s\n", strerror(errno));
             free(stacks[i]);
             return -1; // clone failed
         }
@@ -101,4 +108,37 @@ int create_namespaces(namespace_t *namespaces, int count) {
     }
 
     return overall_status;
+}
+
+int remove_namespace(char *ns_name) {
+    char ns_path[100];
+    snprintf(ns_path, 100, "%s/%s", NETNS_RUN_DIR, ns_name);
+
+    if (umount(ns_path) != 0) {
+        if (!(errno == ENOENT || errno == EINVAL)) {
+            fprintf(stderr, "Unmount failed for %s: %s\n", ns_name,
+                    strerror(errno));
+            return -1;
+        }
+    }
+
+    if (unlink(ns_path) != 0) {
+        if (errno != ENOENT) {
+            fprintf(stderr, "Unlink failed for %s: %s\n", ns_name,
+                    strerror(errno));
+        }
+    }
+
+    return 0;
+}
+
+int remove_namespaces(namespace_t *namespaces, int count) {
+    int cleanup_status = 0;
+    for (int i = 0; i < count; i++) {
+        if ((cleanup_status = remove_namespace(namespaces[i].name)) != 0) {
+            fprintf(stderr, "Failed to remove namespace %s\n",
+                    namespaces[i].name);
+        }
+    }
+    return cleanup_status;
 }
