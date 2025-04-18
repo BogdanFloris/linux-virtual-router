@@ -19,6 +19,7 @@
             pkgs.valgrind
             pkgs.nftables
             pkgs.pkg-config
+            pkgs.lsof
           ];
         };
       });
